@@ -14,34 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class BookDao {
+public interface BookDao {
 
-    @PersistenceContext
-    EntityManager em;
+    public List<Book> findBooksByAuthorOrTitleOrGenre(String author, String title, String genre);
 
-    public List<Book> findBooksByAuthorOrTitleOrGenre(String author, String title, String genre) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Book> cq = cb.createQuery(Book.class);
-
-        Root<Book> root = cq.from(Book.class);
-
-        List<Predicate> predicates = new ArrayList<>();
-
-        if(author!=null){
-           predicates.add(cb.equal(root.get("author"), author));
-        }
-
-        if(title!=null){
-            predicates.add(cb.like(root.get("title"), "%" + title + "%"));
-        }
-
-        if(genre!=null){
-            predicates.add(cb.like(root.get("genre"), "%" + genre + "%"));
-        }
-
-        cq.where(predicates.toArray(new Predicate[0]));
-
-        return em.createQuery(cq).getResultList();
-
-    }
 }
